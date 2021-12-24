@@ -7,6 +7,7 @@ import pkgutil
 import xdg.BaseDirectory
 
 import paperful.cli.logging
+import paperful.cli.subcommands
 import paperful.paperless
 
 logger = logging.getLogger(
@@ -48,6 +49,8 @@ def entry_point(
     )
 
     subcommands = load_subcommands(
+        package=paperful.cli.subcommands.__name__,
+        paths=paperful.cli.subcommands.__path__,
     )
 
     load_subcommand_defaults(
@@ -134,16 +137,14 @@ def entry_point(
 
 
 def load_subcommands(
-            package='paperful.cli.subcommands',
-            path='paperful/cli/subcommands',
+            package,
+            paths,
         ):
     subcommands = {
     }
 
     iterator = pkgutil.iter_modules(
-        path=[
-            path,
-        ],
+        path=paths,
     )
     for module_info in iterator:
         module_name = module_info.name
@@ -166,7 +167,7 @@ def load_subcommands(
             # subcommand contains subcommands
             subcommand['subcommands'] = load_subcommands(
                 package=module.__name__,
-                path=module.__path__[0],
+                paths=module.__path__,
             )
 
         subcommands[module_name] = subcommand
