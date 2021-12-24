@@ -44,7 +44,6 @@ def entry_point(
 
     subcommand_parsers = parser.add_subparsers(
         dest='action',
-        required=True,
         title='subcommands',
     )
 
